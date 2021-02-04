@@ -4,7 +4,7 @@ s3_conf:
   s3_bucket: ABC
 
 sftp_conf:
-    hostname: xyz.amazonaws.com
+    hostname: XYZ
     port: 22
     username: ubuntu
     pem: resources/sftpKeyPair.ppk
