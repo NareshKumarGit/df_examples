@@ -1,16 +1,17 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import first,trim,lower,ltrim,initcap,format_string,coalesce,lit,col
-from src.model.Person import Person
+from model.Person import Person
 
 if __name__ == '__main__':
     # Create the SparkSession
-    sparkSession = SparkSession \
+    spark = SparkSession \
         .builder \
         .appName("DSL examples") \
         .master('local[*]') \
         .getOrCreate()
+    spark.sparkContext.setLogLevel('ERROR')
 
-    peopleDf = sparkSession.createDataFrame([
+    people_df = spark.createDataFrame([
         Person("Sidhartha", "Ray", 32, None, "Programmer"),
         Person("Pratik", "Solanki", 22, 176.7, None),
         Person("Ashok ", "Pradhan", 62, None, None),
@@ -18,47 +19,47 @@ if __name__ == '__main__':
         Person("Pratik", "Solanki", 22, 222.2, "Teacher")
     ])
 
+    people_df.show()
+    people_df.groupBy("firstName").agg(first("weightInLbs")).show()
+    people_df.groupBy(trim(lower(col('firstName')))).agg(first("weightInLbs")).show()
+    people_df.groupBy(trim(lower(col("firstName")))).agg(first("weightInLbs", True)).show()
+    people_df.sort(col("weightInLbs").desc()).groupBy(trim(lower(col("firstName")))).agg(first("weightInLbs", True)).show()
+    people_df.sort(col("weightInLbs").asc_nulls_last()).groupBy(trim(lower(col("firstName")))).agg(first("weightInLbs", True)).show()
 
-    peopleDf.show()
-    peopleDf.groupBy("firstName").agg(first("weightInLbs")).show()
-    peopleDf.groupBy(trim(lower(col('firstName')))).agg(first("weightInLbs")).show()
-    peopleDf.groupBy(trim(lower(col("firstName")))).agg(first("weightInLbs", True)).show()
-    peopleDf.sort(col("weightInLbs").desc()).groupBy(trim(lower(col("firstName")))).agg(first("weightInLbs", True)).show()
-    peopleDf.sort(col("weightInLbs").asc_nulls_last()).groupBy(trim(lower(col("firstName")))).agg(first("weightInLbs", True)).show()
-
-    correctedPeopleDf = peopleDf\
+    corrected_people_df = people_df\
         .withColumn("firstName", initcap("firstName"))\
         .withColumn("firstName", ltrim(initcap("firstName")))\
         .withColumn("firstName", trim(initcap("firstName")))\
 
-    correctedPeopleDf.groupBy("firstName").agg(first("weightInLbs")).show()
+    corrected_people_df.groupBy("firstName").agg(first("weightInLbs")).show()
 
-    correctedPeopleDf = correctedPeopleDf\
+    corrected_people_df = corrected_people_df\
         .withColumn("fullName", format_string("%s %s", "firstName", "lastName"))\
 
-    correctedPeopleDf.show()
+    corrected_people_df.show()
 
-    correctedPeopleDf = correctedPeopleDf\
+    corrected_people_df = corrected_people_df\
         .withColumn("weightInLbs", coalesce("weightInLbs", lit(0)))\
 
-    correctedPeopleDf.show()
+    corrected_people_df.show()
 
-    correctedPeopleDf\
+    corrected_people_df\
         .filter(lower(col("jobType")).contains("engineer"))\
         .show()
 
     # List
-    correctedPeopleDf \
-        .filter(lower(col("jobType")).isin(["chemical engineer","abc" ,"teacher"])) \
+    corrected_people_df \
+        .filter(lower(col("jobType")).isin(["chemical engineer", "abc", "teacher"])) \
         .show()
 
     # Without List
-    correctedPeopleDf\
+    corrected_people_df\
         .filter(lower(col("jobType")).isin("chemical engineer", "teacher"))\
         .show()
 
     # Exclusion
-    correctedPeopleDf \
+    corrected_people_df \
         .filter(~lower(col("jobType")).isin("chemical engineer", "teacher")) \
         .show()
 
+# spark-submit --packages "org.apache.hadoop:hadoop-aws:2.7.4" dataframe/curation/dsl/more_functions.py
