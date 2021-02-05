@@ -23,7 +23,10 @@ if __name__ == '__main__':
     with open(appConfigFilePath) as conf:
         doc = yaml.load(conf, Loader=yaml.FullLoader)
 
-    jdbcParams = {"url": ut.get_mysql_jdbc_url(doc),
+    host = doc["mysql_conf"]["hostname"]
+    port = doc["mysql_conf"]["port"]
+    database = doc["mysql_conf"]["database"]
+    jdbcParams = {"url": f"jdbc:mysql://{host}:{port}/{database}?autoReconnect=true&useSSL=false",
                   "lowerBound": "1",
                   "upperBound": "100",
                   "dbtable": doc["mysql_conf"]["dbtable"],
