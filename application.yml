@@ -7,7 +7,7 @@ sftp_conf:
     hostname: XYZ
     port: 22
     username: ubuntu
-    pem: resources/sftpKeyPair.ppk
+    pem: sftpKeyPair.ppk
     filetype: csv
     delimiter: |
     directory: /home/ubuntu/data

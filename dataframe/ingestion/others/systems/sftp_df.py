@@ -5,7 +5,7 @@ import os.path
 if __name__ == '__main__':
     # Create the SparkSession
     spark = SparkSession \
-        .builder \
+        .builder \ j
         .appName("DataFrames examples") \
         .master('local[*]') \
         .config('spark.jars.packages', 'com.springml:spark-sftp_2.11:1.1.1') \
@@ -23,7 +23,7 @@ if __name__ == '__main__':
         .option("host", doc["sftp_conf"]["hostname"])\
         .option("port", doc["sftp_conf"]["port"])\
         .option("username", doc["sftp_conf"]["username"])\
-        .option("pem", os.path.abspath(current_dir + "/../../../../../../../" + doc["sftp_conf"]["pem"]))\
+        .option("pem", doc["sftp_conf"]["pem"])\
         .option("fileType", "csv")\
         .option("delimiter", "|")\
         .load(doc["sftp_conf"]["directory"] + "/receipts_delta_GBR_14_10_2017.csv")
