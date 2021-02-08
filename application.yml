@@ -1,5 +1,5 @@
 s3_conf:
-  s3_bucket: ABC
+  s3_bucket: naresh1407
 
 sftp_conf:
     filetype: csv

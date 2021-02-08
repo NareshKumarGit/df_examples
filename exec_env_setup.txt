@@ -18,7 +18,7 @@ git push origin master
 # Setup an EMR cluster
 # ---------------------------------------------
 # Go to AWS console, navigate to lambda service and create a lambda (create_emr_cluster.py) using Python 3.7
-# Execute the lambda to create an single-node EMR cluster
+# Execute the lambda to create an two-node EMR cluster
 
 # Open an SSH session with the EMR cluster from your local system,
 ssh -i spark.pem hadoop@<cluster_dns_name>
