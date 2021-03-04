@@ -4,6 +4,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import IntegerType
 import os.path
 import yaml
+import sys
 
 if __name__ == '__main__':
     # Create the SparkSession
@@ -23,10 +24,21 @@ if __name__ == '__main__':
     secret = open(app_secrets_path)
     app_secret = yaml.load(secret, Loader=yaml.FullLoader)
 
+    s3_access_key= app_secret["s3_conf"]["access_key"]
+    s3_secret_access=app_secret["s3_conf"]["secret_access_key"]
+
+    if sys.argv > 1 and sys.argv[1] is not None and sys.argv[2] is not None:
+        s3_access_key=sys.argv[1]
+        s3_secret_access_key=sys.argv[2]
+
+
     # Setup spark to use s3
     hadoop_conf = spark.sparkContext._jsc.hadoopConfiguration()
-    hadoop_conf.set("fs.s3a.access.key", app_secret["s3_conf"]["access_key"])
-    hadoop_conf.set("fs.s3a.secret.key", app_secret["s3_conf"]["secret_access_key"])
+    hadoop_conf.set("fs.s3a.access.key", s3_access_key)
+    hadoop_conf.set("fs.s3a.secret.key", s3_secret_access_key)
+
+
+
 
     print("\nCreating dataframe ingestion parquet file using 'SparkSession.read.parquet()',")
     nyc_omo_df = spark.read \

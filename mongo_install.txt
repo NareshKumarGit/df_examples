@@ -6,6 +6,15 @@ sudo apt-get update
 sudo apt-get install -y mongodb-org
 sudo systemctl unmask mongodb
 
+cd ../..
+cd etc/
+sudo vi mongod.conf
+# change bindIp to the localhost
+sudo service mongod restart
+
+
+
+
 # Create a mongo doc
 ---------------------------------------
 mongo
