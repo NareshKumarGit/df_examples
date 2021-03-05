@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 import yaml
 import os.path
-import utils.aws_utils as ut
+# import utils.aws_utils as ut
 
 def get_mysql_jdbc_url(mysql_config: dict):
     host = mysql_config["mysql_conf"]["hostname"]
