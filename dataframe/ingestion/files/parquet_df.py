@@ -25,19 +25,12 @@ if __name__ == '__main__':
     app_secret = yaml.load(secret, Loader=yaml.FullLoader)
 
     s3_access_key= app_secret["s3_conf"]["access_key"]
-    s3_secret_access=app_secret["s3_conf"]["secret_access_key"]
-
-    if sys.argv > 1 and sys.argv[1] is not None and sys.argv[2] is not None:
-        s3_access_key=sys.argv[1]
-        s3_secret_access_key=sys.argv[2]
-
+    s3_secret_access_key=app_secret["s3_conf"]["secret_access_key"]
 
     # Setup spark to use s3
     hadoop_conf = spark.sparkContext._jsc.hadoopConfiguration()
     hadoop_conf.set("fs.s3a.access.key", s3_access_key)
     hadoop_conf.set("fs.s3a.secret.key", s3_secret_access_key)
-
-
 
 
     print("\nCreating dataframe ingestion parquet file using 'SparkSession.read.parquet()',")
@@ -89,7 +82,6 @@ if __name__ == '__main__':
         .write \
         .mode("overwrite") \
         .parquet("s3a://" + app_conf["s3_conf"]["s3_bucket"] + "/nyc_omo_data")
-
     spark.stop()
 
 # spark-submit --packages "org.apache.hadoop:hadoop-aws:2.7.4" dataframe/ingestion/files/parquet_df.py
