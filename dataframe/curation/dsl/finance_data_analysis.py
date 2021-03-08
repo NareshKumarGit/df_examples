@@ -38,7 +38,7 @@ if __name__ == '__main__':
     finance_df.show(5, False)
 
     finance_df\
-        .orderBy("Amount")\
+        .orderBy(finance_df["Amount"].desc())\
         .show(5)
 
     # concat_ws function available sql.functions
